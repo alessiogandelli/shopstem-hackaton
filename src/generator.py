@@ -7,7 +7,7 @@ import datetime
 
 
 
-# age generator 
+# person generator
 def age_generator():
     age = np.random.randint(10, 100)
     return age
@@ -26,20 +26,27 @@ def get_path():
 
 customers = []
 sensors = []
-for i in range(1):
-    now = datetime.datetime.now()
+
+today = datetime.datetime(2022, 11, 11, 10, 0, 0, 0) # start date and time 11-11-21 10:00:00
+timespan = 5 * 60 # number of seconds we want to generate data for
+n_users = 10 # number of users we want to generate data for
+
+
+for i in range(n_users):
+    offset = np.random.randint(0, timespan)
+    now = today + datetime.timedelta(seconds=offset)
     customers.append({ 'time': now, 'age': age_generator(), 'gender': gender_generator()})
-    
+    address = np.random.randint(100000, 999999)
 
     p = get_path()
 
     while len(p) > 0:
         now = now + datetime.timedelta(seconds=1)
-        if np.random.randint(0, 10) > 5:
+        if np.random.randint(0, 10) > 7:
             sensor = p.pop(0)
-            print('sensor', sensor)
+            
 
-        sensors.append({ 'time': now, 'sensor':sensor })
+        sensors.append({ 'time': now, 'sensor':sensor , 'address': address})
 
     for sensor in p:
         wait = np.random.randint(0, 100)
@@ -50,14 +57,16 @@ for i in range(1):
 
 
 pd.DataFrame(customers)
-pd.DataFrame(sensors)
+sensors = pd.DataFrame(sensors).astype({'time': 'datetime64[ns]'})
+
     
 
 
 
         
 
-
+#set max lines to see 
+pd.set_option('display.max_rows', 1000)
 
 
 
