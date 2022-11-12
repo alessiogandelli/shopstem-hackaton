@@ -5,17 +5,17 @@ import networkx as nx
 
 G = nx.Graph()
 
-G.add_node(0, name="Entrance", pos = (0,0))
-G.add_node(1, name="Pants Man", pos = (0,100))
-G.add_node(2, name="Shirt Man", pos = (0,200))
-G.add_node(3, name="Shoes Man", pos = (0,300))
-G.add_node(4, name="Pants Woman", pos = (100,100))
-G.add_node(5, name="Shirt Woman", pos = (100,200))
-G.add_node(6, name="Shoes Woman", pos = (100,300))
-G.add_node(7, name="Kids", pos = (300,300))
-G.add_node(8, name="Shoes Kids", pos = (300,200))
-G.add_node(9, name="Accessories", pos = (200,0))
-G.add_node(10, name="Exit", pos = (300,0))
+G.add_node(0, name="Entrance", pos = (0,0), img = "imgs/log-in.png")
+G.add_node(1, name="Pants Man", pos = (0,100), img = "imgs/pants m.png")
+G.add_node(2, name="Shirt Man", pos = (0,200), img = "imgs/shirt m.png")
+G.add_node(3, name="Shoes Man", pos = (0,300), img = "imgs/shoe m.png")
+G.add_node(4, name="Pants Woman", pos = (100,100), img = "imgs/pants w.png")
+G.add_node(5, name="Shirt Woman", pos = (100,200), img = "imgs/shirt w.png")
+G.add_node(6, name="Shoes Woman", pos = (100,300), img = "imgs/shoe w.png")
+G.add_node(7, name="Kids", pos = (300,300), img = "imgs/kids.png")
+G.add_node(8, name="Shoes Kids", pos = (300,200), img = "imgs/shoe k.png")
+G.add_node(9, name="Accessories", pos = (200,0), img = "imgs/accessories.png")
+G.add_node(10, name="Exit", pos = (300,0), img = "imgs/log-out.png")
 
 
 G.add_edge(0,1)
@@ -147,6 +147,10 @@ for node in G.nodes(data=True):
     nodo['id'] = node[1]['name']
     nodo['x'] = node[1]['pos'][0]
     nodo['y'] = node[1]['pos'][1]
+    fill = {}
+    fill['src'] = node[1]['img']
+    nodo['fill'] = fill
+
     normal = {}
     normal['height'] = total_sensor_time[node[0]].total_seconds()
     nodo['normal'] = normal
@@ -172,12 +176,12 @@ for edge in G.edges():
 
 max_node = max([node['normal']['height'] for node in nodes])
 for node in nodes:
-    node['normal']['height'] = (node['normal']['height']/ max_node ) * 10
+    node['normal']['height'] = (node['normal']['height']/ max_node ) 
 
 
 max_edge = max([edge['normal']['stroke']['thickness'] for edge in edges])
 for edge in edges:
-    edge['normal']['stroke']['thickness'] = (edge['normal']['stroke']['thickness']/ max_edge ) * 10
+    edge['normal']['stroke']['thickness'] = (edge['normal']['stroke']['thickness']/ max_edge ) 
 
 
 graph = {}
