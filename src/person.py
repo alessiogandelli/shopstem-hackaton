@@ -1,14 +1,49 @@
 #%%
 from generator import simulator
 import datetime 
+import networkx as nx
+
+G = nx.Graph()
+
+for i in range(0,9):
+    G.add_node(i)
+
+G.add_edge(0,1)
+G.add_edge(0,2)
+G.add_edge(1,3)
+G.add_edge(2,3)
+G.add_edge(1,4)
+G.add_edge(0,3)
+G.add_edge(1,5)
+G.add_edge(2,5)
+G.add_edge(0,4)
+G.add_edge(5,4)
+G.add_edge(2,7)
+G.add_edge(4,8)
+G.add_edge(1,8)
+G.add_edge(0,7)
+G.add_edge(3,7)
+G.add_edge(3,6)
+
 
 today = datetime.datetime(2022, 11, 11, 10, 0, 0, 0) # start date and time 11-11-21 10:00:00
-timespan = 5 * 60 # number of seconds we want to generate data for
-n_users = 10 # number of users we want to generate data for
+timespan = 8 * 60 * 60 # number of seconds we want to generate data for
+n_users = 1000 # number of users we want to generate data for
 
 
-customers, sensors, receipts = simulator(today, timespan, n_users)
+
+customers, sensors, receipts = simulator(today, timespan, n_users, G)
 # %%
+customers.join(sensors, on='address', how='left').join(receipts, on='address', how='left')
+
+
+# drop column time 
+customers = customers.drop(columns=['time'])
+customers.set_index('address', inplace=True)
+sensors.set_index('address', inplace=True)
+
+
+
 
 class Person:
 
@@ -59,6 +94,8 @@ class Person:
         return str(self.address) + ' ' + str(self.age) + ' ' + self.gender
         
 
+    def get_df(self):
+        returnc
     
     
 

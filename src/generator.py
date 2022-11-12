@@ -12,27 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import networkx as nx
 
-G = nx.Graph()
 
-for i in range(0,9):
-    G.add_node(i)
-
-G.add_edge(0,1)
-G.add_edge(0,2)
-G.add_edge(1,3)
-G.add_edge(2,3)
-G.add_edge(1,4)
-G.add_edge(0,3)
-G.add_edge(1,5)
-G.add_edge(2,5)
-G.add_edge(0,4)
-G.add_edge(5,4)
-G.add_edge(2,7)
-G.add_edge(4,8)
-G.add_edge(1,8)
-G.add_edge(0,7)
-G.add_edge(3,7)
-G.add_edge(3,6)
 
 
 # person generator
@@ -75,7 +55,7 @@ def get_receipt():
 #%%
 
 
-def simulator(oggi, timespan, n_users):
+def simulator(oggi, timespan, n_users, G):
     customers = []
     sensors = []
     receipts = []
@@ -96,7 +76,7 @@ def simulator(oggi, timespan, n_users):
         while len(p) > 0:
             now = now + datetime.timedelta(seconds=1)
 
-            if np.random.randint(0, 10) > 5:
+            if np.random.randint(0, 100) > 80:
                 sensor = p.pop(0)
 
             sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
