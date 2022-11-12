@@ -31,14 +31,15 @@ def time_generator():
 def get_path(G):
     
     iniz = 0
-    fine = 1
+    fine = 10
     current = iniz
     lista_sensors = [iniz]
 
     while current != fine:
-        l = [edge  for edge in list(G.edges(iniz)) if edge[1] != iniz ]
+        l = [edge  for edge in list(G.edges(current)) if edge[1] != current ]
 
         current = l[randint(0,len(l)-1)][1]
+
         lista_sensors.append(current)
     
 

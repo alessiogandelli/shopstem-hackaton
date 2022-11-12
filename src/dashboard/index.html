@@ -14,32 +14,6 @@
   </head>
   <body>
     <div id="container"></div>
-    <script>
-
-      anychart.onDocumentReady(function () {
-        anychart.data.loadJsonFile("https://raw.githubusercontent.com/alessiogandelli/shopstem-hackaton/main/src/dashboard/got_graph.json", function (data) {
-
-          // create a chart from the loaded data
-          var chart = anychart.graph(data);
-          //chart.layout().type("fixed");
-          // set the title
-          chart.title("shop");
-
-          // access nodes
-          var nodes = chart.nodes();
-
-          // set the size of nodes
-          nodes.normal().height(30);
-          nodes.hovered().height(45);
-          nodes.selected().height(45);
-
-
-          // draw the chart
-          chart.container("container").draw();
-
-        });
-      });
-
-    </script>
+    <script src="grafo.js"></script> 
   </body>
 </html>
