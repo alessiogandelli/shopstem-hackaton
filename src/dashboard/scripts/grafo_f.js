@@ -3,7 +3,7 @@
 
 
 anychart.onDocumentReady(function () {
-    anychart.data.loadJsonFile("https://raw.githubusercontent.com/alessiogandelli/shopstem-hackaton/main/src/graphs/graph_m.json", function (data) {
+    anychart.data.loadJsonFile("https://raw.githubusercontent.com/alessiogandelli/shopstem-hackaton/main/src/graphs/graph_f.json", function (data) {
 
        // create a chart from the loaded data
        var chart = anychart.graph(data);
