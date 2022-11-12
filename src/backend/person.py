@@ -136,5 +136,59 @@ for person in persons:
 
 
 
+#%%
+
+
+nodes = []
+
+
+for node in G.nodes(data=True):
+    nodo = {}
+    nodo['id'] = node[1]['name']
+    nodo['x'] = node[1]['pos'][0]
+    nodo['y'] = node[1]['pos'][1]
+    normal = {}
+    normal['height'] = total_sensor_time[node[0]].total_seconds()
+    nodo['normal'] = normal
+    nodes.append(nodo)
+
+#%%
+edges = []
+
+for edge in G.edges():
+    arco = {}
+    arco['from'] = G.nodes[edge[0]]['name']
+    arco['to'] = G.nodes[edge[1]]['name']
+    normal = {}
+    stroke = {}
+    stroke['thickness'] = edge_total_score[edge] 
+    normal['stroke'] = stroke
+    arco['normal'] = normal
+    edges.append(arco)
+
+# %%
+
+
+
+max_node = max([node['normal']['height'] for node in nodes])
+for node in nodes:
+    node['normal']['height'] = (node['normal']['height']/ max_node ) * 10
+
+
+max_edge = max([edge['normal']['stroke']['thickness'] for edge in edges])
+for edge in edges:
+    edge['normal']['stroke']['thickness'] = (edge['normal']['stroke']['thickness']/ max_edge ) * 10
+
+
+graph = {}
+graph['nodes'] = nodes
+graph['edges'] = edges
+
+
+#%%
+import json
+# export json 
+with open('graph.json', 'w') as outfile:
+    json.dump(graph, outfile)
 
 # %%
