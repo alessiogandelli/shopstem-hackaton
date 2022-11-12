@@ -67,42 +67,43 @@ def get_path(G):
 
 #%%
 
-customers = []
-sensors = []
 
-today = datetime.datetime(2022, 11, 11, 10, 0, 0, 0) # start date and time 11-11-21 10:00:00
-timespan = 5 * 60 # number of seconds we want to generate data for
-n_users = 10 # number of users we want to generate data for
+def simulator(oggi, timespan, n_users):
+    customers = []
+    sensors = []
+    print(oggi)
 
 
-for i in range(n_users):
-    offset = np.random.randint(0, timespan)
-    now = today + datetime.timedelta(seconds=offset)
-    address = np.random.randint(100000, 999999)
-    customers.append({ 'time': now, 'age': age_generator(), 'gender': gender_generator(),  'address': address})
-    sensor = 0
-    sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
-
-    p = get_path(G)
-
-    while len(p) > 0:
-        now = now + datetime.timedelta(seconds=1)
-
-        if np.random.randint(0, 10) > 5:
-            sensor = p.pop(0)
-
+    for i in range(n_users):
+        
+        offset = np.random.randint(0, timespan)
+        now = oggi + datetime.timedelta(seconds=offset)
+        address = np.random.randint(100000, 999999)
+        customers.append({ 'time': now, 'age': age_generator(), 'gender': gender_generator(),  'address': address})
+        sensor = 0
         sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
 
-            
+        p = get_path(G)
 
-            
+        while len(p) > 0:
+            now = now + datetime.timedelta(seconds=1)
+
+            if np.random.randint(0, 10) > 5:
+                sensor = p.pop(0)
+
+            sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
+
+                
+
+                
 
 
 
 
 
-customers = pd.DataFrame(customers)
-sensors = pd.DataFrame(sensors).astype({'time': 'datetime64[ns]'})
+    customers = pd.DataFrame(customers)
+    sensors = pd.DataFrame(sensors).astype({'time': 'datetime64[ns]'})
+    return customers, sensors
 
     
 
@@ -118,8 +119,6 @@ pd.set_option('display.max_rows', 1000)
 
 
 #%%
-
-
 
 
 
