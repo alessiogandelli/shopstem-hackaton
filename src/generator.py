@@ -60,10 +60,17 @@ def get_path(G):
 
         current = l[randint(0,len(l)-1)][1]
         lista_sensors.append(current)
-        
+    
+
+
     return lista_sensors
 
-
+def get_receipt():
+    nmax = np.random.randint(1,20)
+    products = []
+    for i in range(nmax):
+     products.append(np.random.randint(1,100))
+    return products
 
 #%%
 
@@ -71,6 +78,7 @@ def get_path(G):
 def simulator(oggi, timespan, n_users):
     customers = []
     sensors = []
+    receipts = []
     print(oggi)
 
 
@@ -92,18 +100,16 @@ def simulator(oggi, timespan, n_users):
                 sensor = p.pop(0)
 
             sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
-
+    
                 
-
+        receipts.append({ 'time': now, 'address': address, 'receipt': get_receipt()}) # entrata
                 
-
-
-
 
 
     customers = pd.DataFrame(customers)
     sensors = pd.DataFrame(sensors).astype({'time': 'datetime64[ns]'})
-    return customers, sensors
+    receipts = pd.DataFrame(receipts).astype({'time': 'datetime64[ns]'})
+    return customers, sensors, receipts
 
     
 

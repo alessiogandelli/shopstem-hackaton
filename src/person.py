@@ -7,7 +7,7 @@ timespan = 5 * 60 # number of seconds we want to generate data for
 n_users = 10 # number of users we want to generate data for
 
 
-customers, sensors = simulator(today, timespan, n_users)
+customers, sensors, receipts = simulator(today, timespan, n_users)
 # %%
 
 class Person:
@@ -16,7 +16,10 @@ class Person:
         self.age = age
         self.gender = gender
         self.address = address
+        self.entry_time = None
+        self.exit_time = None
         self.sensors_time = self.get_sensors()
+        self.receipts = self.get_receipts()
 
     
     def get_sensors(self):
@@ -26,6 +29,7 @@ class Person:
 
         current_sensor = 0
         start_time = min(s['time'])
+        self.entry_time = start_time
 
         sensors_time = []
 
@@ -40,7 +44,19 @@ class Person:
 
             current_sensor = sensor['sensor']
 
+        # aggiungo l'ultimo sensor
+        delta_time = time - start_time
+        sensors_time.append({'sensor': current_sensor, 'time': delta_time})
+        self.exit_time = time
+
         return sensors_time
+
+    def get_receipts(self):
+        r = receipts[receipts['address'] == self.address].sort_values('time')
+        return list(r['receipt'])[0]
+
+    def __repr__(self) -> str:
+        return str(self.address) + ' ' + str(self.age) + ' ' + self.gender
         
 
     
@@ -48,5 +64,11 @@ class Person:
 
 
 # %%
-pippo = Person(10, 'M', 790853)
+persons = []
+for i, person in customers.iterrows():
+    persons.append(Person(person['age'], person['gender'], person['address']))
+# %%
+
+
+
 # %%
