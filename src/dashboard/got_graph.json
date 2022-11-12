@@ -4,34 +4,34 @@
       "id": "ingresso", "x":0, "y": 0  
     },
     {
-      "id": "pantaloni uomo", "x":0, "y": 1
+      "id": "pantaloni uomo", "x":0, "y": 100
     },
     {
-      "id": "panta donna",  "x":1, "y": 1
+      "id": "panta donna",  "x":100, "y": 100
     },
     {
-      "id": "maglie uomo", "x":0, "y": 2
+      "id": "maglie uomo", "x":0, "y": 200
     },
     {
-      "id": "maglia donna", "x":1, "y": 2
+      "id": "maglia donna", "x":100, "y": 200
     },
     {
-      "id": "bambino", "x":2, "y": 3
+      "id": "bambino", "x":200, "y": 300
     },
     {
-      "id": "scarpe uomo", "x":0, "y": 3
+      "id": "scarpe uomo", "x":0, "y": 300
     },
     {
-      "id": "scarpe donna", "x":1, "y": 3
+      "id": "scarpe donna", "x":100, "y": 300
     },
     {
-      "id": "scarpe bambino", "x":2, "y": 3
+      "id": "scarpe bambino", "x":200, "y": 300
     },
     {
-      "id": "accessori", "x":1, "y": 0
+      "id": "accessori", "x":100, "y": 0
     },
     {
-      "id": "uscita", "x":2, "y": 0
+      "id": "uscita", "x":200, "y": 0
     }
   ],
   "edges": [
