@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-graph.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-data-adapter.min.js"></script>
+    <style type="text/css">
+      html, body, #container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script>
+
+      anychart.onDocumentReady(function () {
+        anychart.data.loadJsonFile("/Users/alessiogandelli/Desktop/cantiere/shopstem-hackaton/src/dashboard/got_graph.json", function (data) {
+
+          // create a chart from the loaded data
+          var chart = anychart.graph(data);
+          chart.layout().type("fixed");
+          // set the title
+          chart.title("shop");
+
+          // access nodes
+          var nodes = chart.nodes();
+
+          // set the size of nodes
+          nodes.normal().height(30);
+          nodes.hovered().height(45);
+          nodes.selected().height(45);
+
+
+          // draw the chart
+          chart.container("container").draw();
+
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "ingresso", "x":0, "y": 0  
+    },
+    {
+      "id": "pantaloni uomo", "x":0, "y": 1
+    },
+    {
+      "id": "panta donna",  "x":1, "y": 1
+    },
+    {
+      "id": "maglie uomo", "x":0, "y": 2
+    },
+    {
+      "id": "maglia donna", "x":1, "y": 2
+    },
+    {
+      "id": "bambino", "x":2, "y": 3
+    },
+    {
+      "id": "scarpe uomo", "x":0, "y": 3
+    },
+    {
+      "id": "scarpe donna", "x":1, "y": 3
+    },
+    {
+      "id": "scarpe bambino", "x":2, "y": 3
+    },
+    {
+      "id": "accessori", "x":1, "y": 0
+    },
+    {
+      "id": "uscita", "x":2, "y": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "ingresso",
+      "to": "pantaloni uomo"
+    },
+    {
+      "from": "ingresso",
+      "to": "accessori"
+    },
+    {
+      "from": "ingresso",
+      "to": "panta donna"
+    },
+    {
+      "from": "pantaloni uomo",
+      "to": "accessori"
+    },
+    {
+      "from": "pantaloni uomo",
+      "to": "maglie uomo"
+    },
+    {
+      "from": "accessori",
+      "to": "panta donna"
+    },
+    {
+      "from": "panta donna",
+      "to": "maglia donna"
+    },
+    {
+      "from": "maglie uomo",
+      "to": "scarpe uomo"
+    },
+    {
+      "from": "maglia donna",
+      "to": "bambino"
+    },
+    {
+      "from": "maglia donna",
+      "to": "scarpe bambinos"
+    },
+    {
+      "from": "maglia donna",
+      "to": "scarpe donna"
+    },
+    {
+      "from": "scarpe donna",
+      "to": "scarpe uomo"
+    },
+    {
+      "from": "scarpe donna",
+      "to": "bambino"
+    },
+    {
+      "from": "scarpe donna",
+      "to": "scarpe bambino"
+    },
+    {
+      "from": "bambino",
+      "to": "scarpe bambino"
+    },
+    {
+      "from": "scarpe bambino",
+      "to": "uscita"
+    }
+
+
+  ]
+}
