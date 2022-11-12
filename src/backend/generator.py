@@ -15,19 +15,22 @@ import networkx as nx
 
 
 
-# person generator
+# random age 10 to 100
 def age_generator():
     age = np.random.randint(10, 100)
     return age
 
+#get a random gender
 def gender_generator():
     gender = np.random.choice(['M', 'F'])
     return gender
+
 
 def time_generator():
     time = np.random.randint(0, 100)
     return time
 
+# create a random path from start to end
 def get_path(G):
     
     iniz = 0
@@ -46,6 +49,7 @@ def get_path(G):
 
     return lista_sensors
 
+# get a random receipt
 def get_receipt():
     nmax = np.random.randint(1,20)
     products = []
@@ -55,19 +59,18 @@ def get_receipt():
 
 #%%
 
-
+# create three tables to simulate, custumers entering the store, the sensors and the receipts
 def simulator(oggi, timespan, n_users, G):
     customers = []
     sensors = []
     receipts = []
-    print(oggi)
 
-
+    #generate n customers
     for i in range(n_users):
         
-        offset = np.random.randint(0, timespan)
-        now = oggi + datetime.timedelta(seconds=offset)
-        address = np.random.randint(100000, 999999)
+        offset = np.random.randint(0, timespan) # random offset from the start time
+        now = oggi + datetime.timedelta(seconds=offset) 
+        address = np.random.randint(100000, 999999) # random address
         customers.append({ 'time': now, 'age': age_generator(), 'gender': gender_generator(),  'address': address})
         sensor = 0
         sensors.append({ 'time': now, 'sensor':sensor , 'address': address}) # entrata 
@@ -98,19 +101,5 @@ def simulator(oggi, timespan, n_users, G):
 
         
 
-#set max lines to see 
-pd.set_option('display.max_rows', 1000)
 
 
-
-
-
-#%%
-
-
-
-
-
-#%%
-
-# %%

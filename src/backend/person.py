@@ -2,7 +2,9 @@
 from generator import simulator
 import datetime 
 import networkx as nx
+import json
 
+# create a graph representing the store, each node is a sensor and each edge is a path between two sensors
 G = nx.Graph()
 
 G.add_node(0, name="Entrance", pos = (0,0), img = "imgs/log-in.png")
@@ -38,15 +40,7 @@ G.add_edge(8,10)
 nx.draw(G, with_labels=True, font_weight='bold')
 
 
-today = datetime.datetime(2022, 11, 11, 10, 0, 0, 0) # start date and time 11-11-21 10:00:00
-timespan = 8 * 60 * 60 # number of seconds we want to generate data for
-n_users = 1000 # number of users we want to generate data for
-
-
-
-customers, sensors, receipts = simulator(today, timespan, n_users, G)
-# %%
-
+#simulate data 
 
 
 
@@ -62,7 +56,7 @@ class Person:
         self.sensors_time = self.get_sensors()
         self.receipts = self.get_receipts()
 
-    
+    # get the path in the store counting how many seconds the person spent in each section
     def get_sensors(self):
 
         s = sensors[sensors['address'] == self.address].sort_values('time')
@@ -74,13 +68,14 @@ class Person:
 
         sensors_time = []
 
-        for i, sensor in s.iterrows():
+        for i, sensor in s.iterrows():  # for each second visited by the person
             time = sensor['time']
 
+            #new sensor
             if current_sensor != sensor['sensor']:
                 
                 delta_time = time - start_time
-                sensors_time.append({'sensor': current_sensor, 'time': delta_time})
+                sensors_time.append({'sensor': current_sensor, 'time': delta_time}) # add the time spent in the previous section
                 start_time = sensor['time']
 
             current_sensor = sensor['sensor']
@@ -101,98 +96,130 @@ class Person:
         
 
     
-    
+def get_grouped_data(persons):
+    total_sensor_time = {} # group by sensor and sum the time spent in each section
+    edge_total_score = {} # count how many walk passed through each edge
+
+    for person in persons:
+        sensor_time = person.sensors_time
+        current = None
+        for sen in sensor_time:
+
+            if current != None:
+                edge = (min(current, sen['sensor']), max(current, sen['sensor']))
+                current = sen['sensor']
+                if edge in edge_total_score:
+                    edge_total_score[edge] += 1
+                else:
+                    edge_total_score[edge] = 1
+            else:
+                current = sen['sensor']
+            
+
+            if sen['sensor'] in total_sensor_time:
+                total_sensor_time[sen['sensor']] += sen['time']
+            else:
+                total_sensor_time[sen['sensor']] = sen['time']
+
+    return total_sensor_time, edge_total_score
+
+
+
+
+#  create json for the dashboard 
+def get_json(total_sensor_time, edge_total_score, filename):
+    #create nodes 
+    nodes = []
+    for node in G.nodes(data=True):
+        nodo = {}
+        nodo['id'] = node[1]['name']
+        nodo['x'] = node[1]['pos'][0]
+        nodo['y'] = node[1]['pos'][1]
+        fill = {}
+        fill['src'] = node[1]['img']
+        nodo['fill'] = fill
+
+        normal = {}
+        normal['height'] = total_sensor_time[node[0]].total_seconds()
+        nodo['normal'] = normal
+        nodes.append(nodo)
+
+    #create edges
+    edges = []
+    for edge in G.edges():
+        arco = {}
+        arco['from'] = G.nodes[edge[0]]['name']
+        arco['to'] = G.nodes[edge[1]]['name']
+        normal = {}
+        stroke = {}
+        stroke['thickness'] = edge_total_score[edge] 
+        normal['stroke'] = stroke
+        arco['normal'] = normal
+        edges.append(arco)
+
+
+    #normalize node size
+    max_node = max([node['normal']['height'] for node in nodes])
+    for node in nodes:
+        node['normal']['height'] = (node['normal']['height']/ max_node ) * 100
+
+    # normalize edges width
+    max_edge = max([edge['normal']['stroke']['thickness'] for edge in edges])
+    for edge in edges:
+        edge['normal']['stroke']['thickness'] = (edge['normal']['stroke']['thickness']/ max_edge )*10 
+
+
+    graph = {}
+    graph['nodes'] = nodes
+    graph['edges'] = edges
+
+
+    # export json 
+    with open(filename, 'w') as outfile:
+        json.dump(graph, outfile)
+        print('json created')
+
 
 
 # %%
+
+
+today = datetime.datetime(2022, 11, 11, 10, 0, 0, 0) # start date and time 11-11-21 10:00:00
+timespan = 8 * 60 * 60 # number of seconds we want to generate data for
+n_users = 1000 # number of users we want to generate data for
+
+
+customers, sensors, receipts = simulator(today, timespan, n_users, G)
+
+# create person objects
 persons = []
 for i, person in customers.iterrows():
     persons.append(Person(person['age'], person['gender'], person['address']))
-# %%
 
-total_sensor_time = {}
-edge_total_score = {}
-
-for person in persons:
-    sensor_time = person.sensors_time
-    current = None
-    for sen in sensor_time:
-
-        if current != None:
-            edge = (min(current, sen['sensor']), max(current, sen['sensor']))
-            current = sen['sensor']
-            if edge in edge_total_score:
-                edge_total_score[edge] += 1
-            else:
-                edge_total_score[edge] = 1
-        else:
-            current = sen['sensor']
-        
-
-        if sen['sensor'] in total_sensor_time:
-            total_sensor_time[sen['sensor']] += sen['time']
-        else:
-            total_sensor_time[sen['sensor']] = sen['time']
+# %% get all data 
+persons = []
+for i, person in customers.iterrows():
+    persons.append(Person(person['age'], person['gender'], person['address']))
+total_sensor_time, edge_total_score = get_grouped_data(persons)
+get_json(total_sensor_time, edge_total_score, 'graph_all.json')
 
 
-
-#%%
-
-
-nodes = []
-
-
-for node in G.nodes(data=True):
-    nodo = {}
-    nodo['id'] = node[1]['name']
-    nodo['x'] = node[1]['pos'][0]
-    nodo['y'] = node[1]['pos'][1]
-    fill = {}
-    fill['src'] = node[1]['img']
-    nodo['fill'] = fill
-
-    normal = {}
-    normal['height'] = total_sensor_time[node[0]].total_seconds()
-    nodo['normal'] = normal
-    nodes.append(nodo)
-
-#%%
-edges = []
-
-for edge in G.edges():
-    arco = {}
-    arco['from'] = G.nodes[edge[0]]['name']
-    arco['to'] = G.nodes[edge[1]]['name']
-    normal = {}
-    stroke = {}
-    stroke['thickness'] = edge_total_score[edge] 
-    normal['stroke'] = stroke
-    arco['normal'] = normal
-    edges.append(arco)
-
-# %%
+# get data for males 
+persons = []
+for i, person in customers.iterrows():
+    if person['gender'] == 'M':
+        persons.append(Person(person['age'], person['gender'], person['address']))
+total_sensor_time, edge_total_score = get_grouped_data(persons)
+get_json(total_sensor_time, edge_total_score, 'graph_m.json')
 
 
+# get data for females
+persons = []
+for i, person in customers.iterrows():
+    if person['gender'] == 'F':
+        persons.append(Person(person['age'], person['gender'], person['address']))
+total_sensor_time, edge_total_score = get_grouped_data(persons)
+get_json(total_sensor_time, edge_total_score, 'graph_f.json')
 
-max_node = max([node['normal']['height'] for node in nodes])
-for node in nodes:
-    node['normal']['height'] = (node['normal']['height']/ max_node ) 
-
-
-max_edge = max([edge['normal']['stroke']['thickness'] for edge in edges])
-for edge in edges:
-    edge['normal']['stroke']['thickness'] = (edge['normal']['stroke']['thickness']/ max_edge ) 
-
-
-graph = {}
-graph['nodes'] = nodes
-graph['edges'] = edges
-
-
-#%%
-import json
-# export json 
-with open('graph.json', 'w') as outfile:
-    json.dump(graph, outfile)
 
 # %%
